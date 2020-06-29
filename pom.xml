@@ -47,9 +47,8 @@
 		<!-- https://mvnrepository.com/artifact/org.jeasy/easy-rules -->
 		<dependency>
 			<groupId>org.jeasy</groupId>
-			<artifactId>easy-rules</artifactId>
+			<artifactId>easy-rules-core</artifactId>
 			<version>4.0.0</version>
-			<type>pom</type>
 		</dependency>
 
 

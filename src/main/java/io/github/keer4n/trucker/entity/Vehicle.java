@@ -20,6 +20,9 @@ public class Vehicle {
     private int maxFuelVolume;
     private Date lastServiceDate;
 
+    @OneToMany(mappedBy = "vin")
+    private List<Reading> readings;
+
     public Vehicle(){
 
     }

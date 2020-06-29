@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Reading {
@@ -19,6 +20,7 @@ public class Reading {
 	private String longitude;
 	private Date timestamp;
 	private float fuelVolume;
+
 
 	public Reading(){
 		this.id = UUID.randomUUID().toString();
