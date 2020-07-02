@@ -1,7 +1,9 @@
 package io.github.keer4n.trucker.service;
 
+import io.github.keer4n.trucker.entity.Alert;
 import io.github.keer4n.trucker.entity.Reading;
 import io.github.keer4n.trucker.entity.Vehicle;
+import io.github.keer4n.trucker.repository.AlertRepository;
 import io.github.keer4n.trucker.repository.ReadingRepository;
 import io.github.keer4n.trucker.repository.VehicleRepository;
 import org.jeasy.rules.api.Facts;
@@ -24,17 +26,15 @@ public class ReadingServiceImpl implements ReadingService {
     ReadingRepository readingRepository;
     @Autowired
     VehicleRepository vehicleRepository;
+    @Autowired
+    AlertRepository alertRepository;
 
     @Override
-    public Reading importOne(Reading reading) {
+    public Reading importOne(Reading reading){
         processRules(reading);
         return readingRepository.save(reading);
     }
 
-    @Override
-    public List<Reading> importAll(List<Reading> readings) {
-        return readingRepository.saveAll(readings);
-    }
 
     @Override
     public List<Reading> getAll() {
@@ -45,6 +45,7 @@ public class ReadingServiceImpl implements ReadingService {
     public List<Reading> findByVin(String vin) {
         return readingRepository.findByVin(vin);
     }
+
 
     public void processRules(Reading reading){
         Facts facts = new Facts();
@@ -59,14 +60,21 @@ public class ReadingServiceImpl implements ReadingService {
             facts.put("redLineRpm", veh.get().getRedlineRpm());
             facts.put("maxFuelVolume", veh.get().getMaxFuelVolume());
         }else{
-            return;
+           return;
         }
         Rules rules = new Rules();
         Rule rpmRule = new RuleBuilder()
                 .name("RPM rule")
                 .description("Triggered when the engine RPM is greater than redLineRPM")
                 .when(f -> (Integer)f.get("engineRpm") > (Integer)f.get("redLineRpm"))
-                .then(f -> System.out.println("==========================\nRPM\n=========================="))
+                .then(f -> {System.out.println("==========================\nRPM Alert for "+ f.get("vin") +"\n==========================");
+                            Alert alert = new Alert();
+                            alert.setType(Alert.Type.RPM); alert.setPriority(Alert.Priority.HIGH);
+                            alert.setVehicle(veh.get());
+                            alertRepository.save(alert);
+//                            veh.get().getAlerts().add(alert);
+//                            vehicleRepository.save(veh.get());
+                            })
                 .build();
         rules.register(rpmRule);
 
@@ -74,7 +82,12 @@ public class ReadingServiceImpl implements ReadingService {
                 .name("Fuel rule")
                 .description("Triggered when the fuel is less than 10% of maximum")
                 .when(f -> (Float)f.get("fuelVolume") < (Integer)f.get("maxFuelVolume")*0.1)
-                .then(f -> System.out.println("FUEL "))
+                .then(f -> {System.out.println("==========================\nFUEL Alert\n==========================");
+                            Alert alert = new Alert();
+                            alert.setType(Alert.Type.FUEL); alert.setPriority(Alert.Priority.MEDIUM);
+                            alert.setVehicle(veh.get());
+                            alertRepository.save(alert);
+                            })
                 .build();
         rules.register(fuelRule);
 
@@ -88,7 +101,12 @@ public class ReadingServiceImpl implements ReadingService {
                     }
                     return false;
                 })
-                .then(f -> System.out.println("TIRE PRESSURE"))
+                .then(f -> {System.out.println("==========================\nTIRE PRESSURE Alert\n==========================");
+                            Alert alert = new Alert();
+                            alert.setType(Alert.Type.TIRE_PRESSURE); alert.setPriority(Alert.Priority.LOW);
+                            alert.setVehicle(veh.get());
+                            alertRepository.save(alert);
+                            })
                 .build();
         rules.register(tirePressureRule);
 
@@ -96,11 +114,17 @@ public class ReadingServiceImpl implements ReadingService {
                 .name("Indicator rule")
                 .description("Triggered when either a engine light is on or engine coolant light is on")
                 .when(f -> (Boolean)f.get("engineCoolantLow") || (Boolean)f.get("checkEngineLightOn"))
-                .then(f -> System.out.println("INDICATOR RULE"))
+                .then(f -> {System.out.println("==========================\nINDICATOR Alert\n==========================");
+                            Alert alert = new Alert();
+                            alert.setType(Alert.Type.INDICATOR); alert.setPriority(Alert.Priority.LOW);
+                            alert.setVehicle(veh.get());
+                            alertRepository.save(alert);
+                             })
                 .build();
         rules.register(indicatorRule);
 
         RulesEngine rulesEngine = new DefaultRulesEngine();
         rulesEngine.fire(rules,facts);
+
     }
 }

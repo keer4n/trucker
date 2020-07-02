@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,5 +26,11 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public List<Vehicle> getAll() {
         return vehicleRepository.findAll();
+    }
+
+    @Override
+    public Vehicle findByVin(String vin) {
+        Optional<Vehicle> vehicle = vehicleRepository.findById(vin);
+        return vehicle.isPresent()?vehicle.get():null;
     }
 }

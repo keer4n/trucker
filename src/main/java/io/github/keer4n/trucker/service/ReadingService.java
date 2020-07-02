@@ -7,7 +7,6 @@ import java.util.List;
 public interface ReadingService {
 
     Reading importOne(Reading reading);
-    List<Reading> importAll(List<Reading> readings);
 
     List<Reading> getAll();
 

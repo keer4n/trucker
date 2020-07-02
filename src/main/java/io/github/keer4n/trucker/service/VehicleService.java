@@ -9,4 +9,6 @@ public interface VehicleService {
     public List<Vehicle> importVehicles(List<Vehicle> vehicleList);
 
     public List<Vehicle> getAll();
+
+    Vehicle findByVin(String vin);
 }

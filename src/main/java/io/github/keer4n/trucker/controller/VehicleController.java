@@ -1,8 +1,10 @@
 package io.github.keer4n.trucker.controller;
 
+import io.github.keer4n.trucker.entity.Reading;
 import io.github.keer4n.trucker.entity.Vehicle;
 import io.github.keer4n.trucker.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +25,11 @@ public class VehicleController {
     @RequestMapping(method =  RequestMethod.GET)
     public List<Vehicle> getAll(){
         return vehicleService.getAll();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "{vin}")
+    public Vehicle findByVin(@Param("id") String vin){
+        return vehicleService.findByVin(vin);
     }
 
 }

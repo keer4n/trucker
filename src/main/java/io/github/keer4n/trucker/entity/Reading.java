@@ -6,10 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -29,6 +26,9 @@ public class Reading {
 	private boolean cruiseControlOn;
 	private int engineRpm;
 	private HashMap<String, Integer> tires;
+
+
+
 
 	public Reading(){
 		this.id = UUID.randomUUID().toString();
