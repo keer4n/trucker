@@ -28,7 +28,7 @@ public class VehicleController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{vin}")
-    public Vehicle findByVin(@Param("id") String vin){
+    public Vehicle findByVin(@PathVariable("vin") String vin){
         return vehicleService.findByVin(vin);
     }
 
