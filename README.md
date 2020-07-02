@@ -1,4 +1,4 @@
-IoT project in Spring 
+IoT RESTful API project in Spring boot
 
 1. Develop following REST endpoints for ingestion from: [http://mocker.egen.io]
 	- Load vehicle details in bulk via a PUT /vehicles endpoint.
